@@ -14,6 +14,10 @@ http://www.html5rocks.com/en/tutorials/webperformance/usertiming/
 Creator:
 Cameron Pittman, Udacity Course Developer
 cameron *at* udacity *dot* com
+
+Optimized by:
+Jerry Dy
+Search for keyword 'jerryopt' to find the optimizations
 */
 
 // As you may have realized, this website randomly generates pizzas.
@@ -202,15 +206,15 @@ function getAdj(x){
     case "scientific":
       var scientific = ["scientific", "technical", "digital", "programming", "calculating", "formulating", "cyberpunk", "mechanical", "technological", 
       "innovative", "brainy", "chemical", "quantum", "astro", "space", "theoretical", "atomic", "electronic", "gaseous", "investigative", "solar", 
-      "extinct", "galactic"]
+      "extinct", "galactic"];
       return scientific;
     default:
-      var scientific = ["scientific", "technical", "digital", "programming", "calculating", "formulating", "cyberpunk", "mechanical", "technological", 
+      scientific = ["scientific", "technical", "digital", "programming", "calculating", "formulating", "cyberpunk", "mechanical", "technological", 
       "innovative", "brainy", "chemical", "quantum", "astro", "space", "theoretical", "atomic", "electronic", "gaseous", "investigative", "solar", 
-      "extinct", "galactic"]
+      "extinct", "galactic"];
       return scientific;
-  };
-};
+  }
+}
 
 // Pulls noun out of array using random number sent from generator
 function getNoun(y) {
@@ -274,13 +278,13 @@ function getNoun(y) {
       "universe", "gravity", "darkMatter", "constellation", "circuit", "asteroid"];
       return scifi;
     default:
-      var scifi = ["robot", "alien", "raygun", "spaceship", "UFO", "rocket", "phaser", "astronaut", "spaceman", "planet", "star", "galaxy", 
+      scifi = ["robot", "alien", "raygun", "spaceship", "UFO", "rocket", "phaser", "astronaut", "spaceman", "planet", "star", "galaxy", 
       "computer", "future", "timeMachine", "wormHole", "timeTraveler", "scientist", "invention", "martian", "pluto", "jupiter", "saturn", "mars",
       "quasar", "blackHole", "warpDrive", "laser", "orbit", "gears", "molecule", "electron", "neutrino", "proton", "experiment", "photon", "apparatus",
       "universe", "gravity", "darkMatter", "constellation", "circuit", "asteroid"];
       return scifi;
-  }; 
-};
+  }
+}
 
 var adjectives = ["dark", "color", "whimsical", "shiny", "noise", "apocalyptic", "insulting", "praise", "scientific"];  // types of adjectives for pizza titles
 var nouns = ["animals", "everyday", "fantasy", "gross", "horror", "jewelry", "places", "scifi"];                        // types of nouns for pizza titles
@@ -293,44 +297,44 @@ function generator(adj, noun) {
   var randomNoun = parseInt(Math.random() * nouns.length);
   var name = "The " + adjectives[randomAdjective].capitalize() + " " + nouns[randomNoun].capitalize();
   return name;
-};
+}
 
 // Chooses random adjective and random noun
 function randomName() {
   var randomNumberAdj = parseInt(Math.random() * adjectives.length);
   var randomNumberNoun = parseInt(Math.random() * nouns.length);
   return generator(adjectives[randomNumberAdj], nouns[randomNumberNoun]);
-};
+}
 
 // These functions return a string of a random ingredient from each respective category of ingredients.
 var selectRandomMeat = function() {
   var randomMeat = pizzaIngredients.meats[Math.floor((Math.random() * pizzaIngredients.meats.length))];
   return randomMeat;
-}
+};
 
 var selectRandomNonMeat = function() {
   var randomNonMeat = pizzaIngredients.nonMeats[Math.floor((Math.random() * pizzaIngredients.nonMeats.length))];
   return randomNonMeat;
-}
+};
 
 var selectRandomCheese = function() {
   var randomCheese = pizzaIngredients.cheeses[Math.floor((Math.random() * pizzaIngredients.cheeses.length))];
   return randomCheese;
-}
+};
 
 var selectRandomSauce = function() {
   var randomSauce = pizzaIngredients.sauces[Math.floor((Math.random() * pizzaIngredients.sauces.length))];
   return randomSauce;
-}
+};
 
 var selectRandomCrust = function() {
   var randomCrust = pizzaIngredients.crusts[Math.floor((Math.random() * pizzaIngredients.crusts.length))];
   return randomCrust;
-}
+};
 
 var ingredientItemizer = function(string) {
   return "<li>" + string + "</li>";
-}
+};
 
 // Returns a string with random pizza ingredients nested inside <li> tags
 var makeRandomPizza = function() {
@@ -344,11 +348,11 @@ var makeRandomPizza = function() {
     pizza = pizza + ingredientItemizer(selectRandomMeat());
   }
 
-  for (var i = 0; i < numberOfNonMeats; i++) {
+  for (i = 0; i < numberOfNonMeats; i++) {
     pizza = pizza + ingredientItemizer(selectRandomNonMeat());
   }
 
-  for (var i = 0; i < numberOfCheeses; i++) {
+  for (i = 0; i < numberOfCheeses; i++) {
     pizza = pizza + ingredientItemizer(selectRandomCheese());
   }
 
@@ -356,7 +360,7 @@ var makeRandomPizza = function() {
   pizza = pizza + ingredientItemizer(selectRandomCrust());
 
   return pizza;
-}
+};
 
 // returns a DOM element for each pizza
 var pizzaElementGenerator = function(i) {
@@ -373,7 +377,6 @@ var pizzaElementGenerator = function(i) {
   pizzaDescriptionContainer = document.createElement("div");
 
   pizzaContainer.classList.add("randomPizzaContainer");
-  pizzaContainer.style.width = "33.33%";
   pizzaContainer.style.height = "325px";
   pizzaContainer.id = "pizza" + i;                // gives each pizza element a unique id
   pizzaImageContainer.classList.add("col-md-6");
@@ -396,8 +399,9 @@ var pizzaElementGenerator = function(i) {
   pizzaContainer.appendChild(pizzaDescriptionContainer);
 
   return pizzaContainer;
-}
+};
 
+var randomPizzaContainerCss = null;
 // resizePizzas(size) is called when the slider in the "Our Pizzas" section of the website moves.
 var resizePizzas = function(size) { 
   window.performance.mark("mark_start_resize");   // User Timing API function
@@ -448,13 +452,14 @@ var resizePizzas = function(size) {
     return dx;
   }
 
-  // Iterates through pizza elements on the page and changes their widths
+  // This function has been optimized so that instead of iterating through each pizza to change its size,
+  // we're now updating the width of .randomPizzaContainer class itself, which triggers the Recalculate
+  // Layout only once for all the random pizzas!
   function changePizzaSizes(size) {
-    for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
-      var dx = determineDx(document.querySelectorAll(".randomPizzaContainer")[i], size);
-      var newwidth = (document.querySelectorAll(".randomPizzaContainer")[i].offsetWidth + dx) + 'px';
-      document.querySelectorAll(".randomPizzaContainer")[i].style.width = newwidth;
-    }
+    var pizzaContainer = document.getElementsByClassName("randomPizzaContainer");
+    var newWidth = (pizzaContainer[0].offsetWidth + determineDx(pizzaContainer[0], size)) + "px";
+
+    randomPizzaContainerCss.style.width = newWidth;
   }
 
   changePizzaSizes(size);
@@ -464,6 +469,18 @@ var resizePizzas = function(size) {
   window.performance.measure("measure_pizza_resize", "mark_start_resize", "mark_end_resize");
   var timeToResize = window.performance.getEntriesByName("measure_pizza_resize");
   console.log("Time to resize pizzas: " + timeToResize[0].duration + "ms");
+};
+
+// used for finding .randomPizzaContainer
+function findCssRule(sel) {
+  for (var i=0; i < document.styleSheets.length; i++) {
+    for (var j=0; j < document.styleSheets[i].cssRules.length; j++) {
+      if (document.styleSheets[i].cssRules[j].selectorText == sel) {
+        return document.styleSheets[i].cssRules[j];
+      }
+    }
+  }
+  return null;  // rule not found
 }
 
 window.performance.mark("mark_start_generating"); // collect timing data
@@ -502,10 +519,26 @@ function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
-  var items = document.querySelectorAll('.mover');
-  for (var i = 0; i < items.length; i++) {
-    var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
-    items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+  // jerryopt: this array holds the precalculated values of the phase offset
+  // this optimizes the loop since Math.sin is very expensive to call
+  var phaseList = [];
+  var scrollTop = document.body.scrollTop / 1250;
+  for (var i=0; i < 5; i++) {
+    phaseList.push(Math.sin(scrollTop + i) * 100);
+  }
+
+
+  for (i = 0; i < 5; i++) {
+    var items = document.getElementsByClassName("mover" + i);
+
+    // jerryopt: We use translate3d to update the translateX and translateZ of each moving pizza
+    // By using translateX instead of the left property, we skip the layout step before painting. We also
+    // use the precalculated phase offset so we don't repeatedly call Math.sin inside this loop.
+    // By using translateZ, we put each pizza on its own z-layer, so the browser doesn't repaint the entire 
+    // screen each time the pizza is moved.
+    for (var j=0; j < items.length; j++) {
+      items[j].style.transform = "translate3d(" + phaseList[i] + "px,0px," + items[j].z + "px)";
+    }
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
@@ -518,22 +551,47 @@ function updatePositions() {
   }
 }
 
-// runs updatePositions on scroll
-window.addEventListener('scroll', updatePositions);
 
-// Generates the sliding pizzas when the page loads.
-document.addEventListener('DOMContentLoaded', function() {
-  var cols = 8;
-  var s = 256;
-  for (var i = 0; i < 200; i++) {
+// jerryopt: This function dynamically calculates the number of moving pizzas needed based on the window size.
+// It is called when the DOM is initially loaded and every time the window is resized.
+// This optimizes the frame rate since we're no longer hard-coded to draw 200 pizzas every time.
+function calculateMovingPizzas() {
+  // we can adjust the default size of the container of the moving pizzas here
+  var pizzaBoxHeight = 256;
+  var pizzaBoxWidth = 256;
+
+  // calculate the number of rows and cols of pizzas for this window size
+  var pizzaRows = Math.ceil(window.innerHeight / pizzaBoxHeight);
+  var pizzaCols = Math.ceil(window.innerWidth / pizzaBoxWidth);
+
+  var movingPizzaContainer = document.querySelector("#movingPizzas1");
+  movingPizzaContainer.innerHTML = "";
+
+  for (var i = 0; i < pizzaRows * pizzaCols; i++) {
     var elem = document.createElement('img');
-    elem.className = 'mover';
+    elem.className = 'mover' + (i % 5) + " mover";
     elem.src = "images/pizza.png";
     elem.style.height = "100px";
     elem.style.width = "73.333px";
-    elem.basicLeft = (i % cols) * s;
-    elem.style.top = (Math.floor(i / cols) * s) + 'px';
-    document.querySelector("#movingPizzas1").appendChild(elem);
+    elem.style.left = (i % pizzaCols) * pizzaBoxWidth + "px";
+    elem.style.top = (Math.floor(i / pizzaCols) * pizzaBoxHeight) + 'px';
+    elem.z = i;   // each pizza gets its own z-layer
+    movingPizzaContainer.appendChild(elem);
   }
   updatePositions();
+}
+
+// jerryopt: find the .randomPizzaContainer class, this class is used by all the random pizzas
+// the width style of this class is updated in changePizzaSizes() to resize all the pizzas
+document.addEventListener('DOMContentLoaded', function() {
+  randomPizzaContainerCss = findCssRule(".randomPizzaContainer");
 });
+
+// runs updatePositions on scroll
+window.addEventListener('scroll', updatePositions);
+
+// recalculate how many moving pizzas needed when the window is resized
+window.addEventListener('resize', calculateMovingPizzas);
+
+// Generates the sliding pizzas when the page loads.
+document.addEventListener('DOMContentLoaded', calculateMovingPizzas);
